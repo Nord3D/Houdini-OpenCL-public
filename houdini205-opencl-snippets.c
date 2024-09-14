@@ -31,6 +31,7 @@ float fit_fma(float x, float omin,float omax, float nmin,float nmax) {
     return clamp(fma(x-omin, (nmax-nmin)/(omax-omin), nmin), nmin,nmax);
 }
 
+
 /*** smooth function like in Houdini VEX ***/
 float smooth (  float min, float max,
                 float x,
@@ -48,6 +49,7 @@ float smooth (  float min, float max,
 
 
 /*** HOUDINI VOLUME functions ***/
+/* some use trilinear_interp_vol() from <interpolate.h>, which is included by default */
 
 size_t  /* voxel idx from ix iy iz, or from "ijk" */
 ijk2idx ( uint i, uint j, uint k,
