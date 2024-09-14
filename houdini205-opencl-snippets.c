@@ -182,3 +182,32 @@ smooth_vol( __global const float * restrict u,
 }
 
 
+
+
+
+/*** Laplacian Smooth for geometry points ********************************/
+/*** Thanks alexwheezy for explaining how to invoke @WRITEBACK kernel ***/
+#bind point &P  float3
+#bind point &P_ float3
+#bind point nbs int[] name=topo:neighbours
+
+#bind parm step
+
+@KERNEL
+{
+    float3 L = 0;
+    
+    for(int i = 0; i < @nbs.entries; ++i)
+    {
+        L += @P(@nbs[i]) - @P;
+    }
+    L /= @nbs.entries;
+    
+    @P_.set(@P + L * @step);
+}
+
+@WRITEBACK
+{
+    @P.set(@P_ + L * @step);
+}
+
