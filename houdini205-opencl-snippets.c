@@ -50,6 +50,7 @@ float smooth (  float min, float max,
 
 /*** HOUDINI VOLUME functions ***/
 /* some use trilinear_interp_vol() from <interpolate.h>, which is included by default */
+/* Assumes uniform scaled voxels, i.e. voxelsize_x == voxelsize_y == voxelsize_z ******/
 
 size_t  /* voxel idx from ix iy iz, or from "ijk" */
 ijk2idx ( uint i, uint j, uint k,
