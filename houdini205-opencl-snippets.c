@@ -1,3 +1,52 @@
+/*** FIT, SMOOTH functions ****************************************************/
+
+/*** fit, efit ***/
+float 
+fit( float x,
+      float omin, float omax, 
+      float nmin, float nmax ) {
+    x -= omin;
+    x *= (nmax-nmin)/(omax-omin);
+    x += nmin;
+    return clamp(x, nmin,nmax);
+}
+
+float
+efit( float x,
+       float omin, float omax, 
+       float nmin, float nmax ) {
+    x -= omin;
+    x *= (nmax-nmin)/(omax-omin);
+    x += nmin;
+    return x;
+}
+
+
+/*** fit variants vith mad(), fma() ***/
+float fit_mad(float x, float omin,float omax, float nmin,float nmax) {
+    return clamp(mad(x-omin, (nmax-nmin)/(omax-omin), nmin), nmin,nmax);
+}
+
+float fit_fma(float x, float omin,float omax, float nmin,float nmax) {
+    return clamp(fma(x-omin, (nmax-nmin)/(omax-omin), nmin), nmin,nmax);
+}
+
+/*** smooth function like in Houdini VEX ***/
+float smooth (  float min, float max,
+                float x,
+                float rolloff
+                ) {
+    x = smoothstep(min,max, x);
+    if ( rolloff == 1 ) return x;
+    x = rolloff > 1 ? pow(x, rolloff) : 1.f-pow(1.f-x, 1.f/fmax(rolloff,0.f));
+    return x;
+}
+
+
+
+
+
+
 /*** HOUDINI VOLUME functions ***/
 
 size_t  /* voxel idx from ix iy iz, or from "ijk" */
