@@ -208,6 +208,6 @@ smooth_vol( __global const float * restrict u,
 
 @WRITEBACK
 {
-    @P.set(@P_ + L * @step);
+    @P.set(@P_);
 }
 
