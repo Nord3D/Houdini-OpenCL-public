@@ -118,3 +118,67 @@ smooth_vol( __global const float * restrict u,
     ...
 }
 
+
+
+
+
+/*** N O I S E ***********************************************************************/
+
+/*** Simple xnoise for VDB example ***/
+#include <xnoise.h>
+
+#bind parm amp      float   val=.1
+#bind parm freq     float   val=10.
+          
+#bind vdb &sdf      float   name=0
+
+@KERNEL
+{
+    float outn; float outdndx; float outdndy; float outdndz;
+    
+    xnoise3d(_bound_theXNoise, @sdf.pos * @freq,
+               &outn, &outdndx, &outdndy, &outdndz);
+               
+    @sdf.set(@sdf - outn * @amp);
+}
+
+
+
+/*** Fractal xnoise with gradient warp for VDB example ***/
+#include <xnoise.h>
+
+#bind parm amp          float   val=.1
+#bind parm freq         float   val=10.
+#bind parm noctaves     int     val=5
+#bind parm lacunarity   float   val=2.
+#bind parm roughness    float   val=.5
+#bind parm gwarp        float   val=.1
+
+#bind vdb &sdf          float   name=0
+
+@KERNEL
+{
+    float4 outng = (float4)(0);
+    float3 pos = @sdf.pos;
+    float a = 1. - .75*@roughness;
+
+    for(int i = 0; i < @noctaves; ++i)
+    {
+        float outn; float outdndx; float outdndy; float outdndz;
+        xnoise3d(_bound_theXNoise, pos * @freq,
+                   &outn, &outdndx, &outdndy, &outdndz);
+
+        outng.s0 += outn    * a;
+        outng.s1 += outdndx * a;
+        outng.s2 += outdndy * a;
+        outng.s3 += outdndz * a;
+        
+        pos += outng.s123*(float3)@gwarp;
+        pos *= (float3)@lacunarity;
+        a *= @roughness;
+    }
+               
+    @sdf.set(@sdf - outng.s0*outng.s0 * @amp);
+}
+
+
