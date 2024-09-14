@@ -102,3 +102,18 @@ smooth_vol( __global const float * restrict u,
                    )/6.f;
 }
 
+
+
+
+
+/*** VOLUME WORLD POSITION in kernell *************************************************/
+#bind volume &sdf float name=0 xformtoworld
+
+@KERNEL
+{
+    float3 P = (float3)(@ix,@iy,@iz);
+    P += (float3).5f; /* Half-voxel compensate */
+    P = mat4vec3mul(@sdf.xformtoworld, P);
+    ...
+}
+
