@@ -5,10 +5,11 @@ float
 fit( float x,
       float omin, float omax, 
       float nmin, float nmax ) {
+    x = clamp(x, omin,omax);
     x -= omin;
     x *= (nmax-nmin)/(omax-omin);
     x += nmin;
-    return clamp(x, nmin,nmax);
+    return x;
 }
 
 float
