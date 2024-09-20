@@ -88,6 +88,17 @@ du_ipos ( __global const float * restrict u,
     /* Z-1 */     - trilinear_interp_vol(pos-st.yyx,u,of,1,ys,zs,resx,resy,resz));
 }
 
+//float  /* Mean value smooth at voxel (assumed use in iterations) */
+//smooth_vol_ixyz( __global const float * restrict u, 
+//                uint ix, uint iy, uint iz,
+//                uint of, uint ys, uint zs ) {
+//    return    (
+//    /* X */     u[ijk2idx(ix+1,iy,iz,of,ys,zs)] + u[ijk2idx(ix-1,iy,iz,of,ys,zs)]
+//    /* Y */   + u[ijk2idx(ix,iy+1,iz,of,ys,zs)] + u[ijk2idx(ix,iy-1,iz,of,ys,zs)]
+//    /* Z */   + u[ijk2idx(ix,iy,iz+1,of,ys,zs)] + u[ijk2idx(ix,iy,iz-1,of,ys,zs)]
+//                )/6.f;
+//}
+
 float  /* Mean value smooth (assumed use in iterations) */
 smooth_vol( __global const float * restrict u, 
             float3 pos,
