@@ -55,8 +55,8 @@ float smooth (  float min, float max,
 
 /* some use trilinear_interp_vol() from <interpolate.h>, which is included by default */
 
-#define M_1_3 .33333333f
-#define M_1_6 .16666667f
+#define M_1_3_F .33333333f
+#define M_1_6_F .16666667f
 
 size_t  /* voxel idx from ix iy iz, or from "ijk" */
 ijk2idx ( uint i, uint j, uint k,
@@ -112,7 +112,7 @@ smooth_vol_ixyz( __global const float * restrict u,
     float sx = ix==0 ? sC : ix==(resx-1) ? sC : (sxL+sxR)*.5;
     float sy = iy==0 ? sC : iy==(resy-1) ? sC : (syL+syR)*.5;
     float sz = iz==0 ? sC : ix==(resz-1) ? sC : (szL+szR)*.5;
-    return ( sx + sy + sz )*M_1_3; // /3.f;
+    return ( sx + sy + sz )*M_1_3_F; // /3.f;
 }
 
 float  /* Mean value smooth (assumed use in iterations) */
@@ -128,7 +128,7 @@ smooth_vol( __global const float * restrict u,
     /* Y-1 */     + trilinear_interp_vol(pos-st.yxy,u,of,1,ys,zs,resx,resy,resz)
     /* Z+1 */     + trilinear_interp_vol(pos+st.yyx,u,of,1,ys,zs,resx,resy,resz)
     /* Z-1 */     + trilinear_interp_vol(pos-st.yyx,u,of,1,ys,zs,resx,resy,resz)
-                   )*M_1_6 // /6.f;
+                   )*M_1_6_F // /6.f;
 }
 
 
