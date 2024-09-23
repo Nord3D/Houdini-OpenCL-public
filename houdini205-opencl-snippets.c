@@ -49,9 +49,14 @@ float smooth (  float min, float max,
 
 
 
-/*** HOUDINI VOLUME functions ***/
+/*** HOUDINI VOLUME functions *********************************************************/
+
+/* Assumes uniform scaled voxels, i.e. voxelsize_x == voxelsize_y == voxelsize_z      */
+
 /* some use trilinear_interp_vol() from <interpolate.h>, which is included by default */
-/* Assumes uniform scaled voxels, i.e. voxelsize_x == voxelsize_y == voxelsize_z ******/
+
+#define M_1_3 .33333333f
+#define M_1_6 .16666667f
 
 size_t  /* voxel idx from ix iy iz, or from "ijk" */
 ijk2idx ( uint i, uint j, uint k,
@@ -88,16 +93,27 @@ du_ipos ( __global const float * restrict u,
     /* Z-1 */     - trilinear_interp_vol(pos-st.yyx,u,of,1,ys,zs,resx,resy,resz));
 }
 
-//float  /* Mean value smooth at voxel (assumed use in iterations) */
-//smooth_vol_ixyz( __global const float * restrict u, 
-//                uint ix, uint iy, uint iz,
-//                uint of, uint ys, uint zs ) {
-//    return    (
-//    /* X */     u[ijk2idx(ix+1,iy,iz,of,ys,zs)] + u[ijk2idx(ix-1,iy,iz,of,ys,zs)]
-//    /* Y */   + u[ijk2idx(ix,iy+1,iz,of,ys,zs)] + u[ijk2idx(ix,iy-1,iz,of,ys,zs)]
-//    /* Z */   + u[ijk2idx(ix,iy,iz+1,of,ys,zs)] + u[ijk2idx(ix,iy,iz-1,of,ys,zs)]
-//                )/6.f;
-//}
+
+float  /* Mean value smooth at voxel (assumed use in iterations) */
+smooth_vol_ixyz( __global const float * restrict u, 
+                uint ix, uint iy, uint iz,
+                uint of, uint ys, uint zs,
+                uint resx, uint resy, uint resz ) {
+//    ix = clamp((int)ix, (int)0, (int)(resx-1));
+//    iy = clamp((int)iy, (int)0, (int)(resy-1));
+//    iz = clamp((int)iz, (int)0, (int)(resz-1));
+    float sC  = u[ijk2idx( ix,   iy,   iz,   of,ys,zs )];
+    float sxL = u[ijk2idx( ix+1, iy,   iz,   of,ys,zs )]; 
+    float sxR = u[ijk2idx( ix-1, iy,   iz,   of,ys,zs )];
+    float syL = u[ijk2idx( ix,   iy+1, iz,   of,ys,zs )]; 
+    float syR = u[ijk2idx( ix,   iy-1, iz,   of,ys,zs )];
+    float szL = u[ijk2idx( ix,   iy,   iz+1, of,ys,zs )]; 
+    float szR = u[ijk2idx( ix,   iy,   iz-1, of,ys,zs )];
+    float sx = ix==0 ? sC : ix==(resx-1) ? sC : (sxL+sxR)*.5;
+    float sy = iy==0 ? sC : iy==(resy-1) ? sC : (syL+syR)*.5;
+    float sz = iz==0 ? sC : ix==(resz-1) ? sC : (szL+szR)*.5;
+    return ( sx + sy + sz )*M_1_3; // /3.f;
+}
 
 float  /* Mean value smooth (assumed use in iterations) */
 smooth_vol( __global const float * restrict u, 
@@ -112,7 +128,7 @@ smooth_vol( __global const float * restrict u,
     /* Y-1 */     + trilinear_interp_vol(pos-st.yxy,u,of,1,ys,zs,resx,resy,resz)
     /* Z+1 */     + trilinear_interp_vol(pos+st.yyx,u,of,1,ys,zs,resx,resy,resz)
     /* Z-1 */     + trilinear_interp_vol(pos-st.yyx,u,of,1,ys,zs,resx,resy,resz)
-                   )/6.f;
+                   )*M_1_6 // /6.f;
 }
 
 
