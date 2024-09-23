@@ -128,7 +128,7 @@ smooth_vol( __global const float * restrict u,
     /* Y-1 */     + trilinear_interp_vol(pos-st.yxy,u,of,1,ys,zs,resx,resy,resz)
     /* Z+1 */     + trilinear_interp_vol(pos+st.yyx,u,of,1,ys,zs,resx,resy,resz)
     /* Z-1 */     + trilinear_interp_vol(pos-st.yyx,u,of,1,ys,zs,resx,resy,resz)
-                   )*M_1_6_F // /6.f;
+                   )*M_1_6_F; // /6.f;
 }
 
 
