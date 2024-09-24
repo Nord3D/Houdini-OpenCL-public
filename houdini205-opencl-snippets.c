@@ -111,7 +111,7 @@ smooth_vol_ixyz( __global const float * restrict u,
     float szR = u[ijk2idx( ix,   iy,   iz-1, of,ys,zs )];
     float sx = ix==0 ? sC : ix==(resx-1) ? sC : (sxL+sxR)*.5;
     float sy = iy==0 ? sC : iy==(resy-1) ? sC : (syL+syR)*.5;
-    float sz = iz==0 ? sC : ix==(resz-1) ? sC : (szL+szR)*.5;
+    float sz = iz==0 ? sC : iz==(resz-1) ? sC : (szL+szR)*.5;
     return ( sx + sy + sz )*M_1_3_F; // /3.f;
 }
 
