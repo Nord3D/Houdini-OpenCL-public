@@ -47,6 +47,16 @@ float smooth (  float min, float max,
 
 
 
+/*** Length, distance ****************************************************************/
+/*** Squared vector length ***/
+float
+length2( float3 v ) {
+    return dot( v, v );
+}
+
+
+
+
 
 
 /*** HOUDINI VOLUME functions *********************************************************/
