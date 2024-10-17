@@ -56,6 +56,23 @@ length2( float3 v ) {
 
 
 
+/*** frac() as in VEX ***/
+__attribute__((overloadable))
+float
+frac( float x ) {
+    return x - floor(x);
+}
+__attribute__((overloadable))
+float2
+frac( float2 x ) {
+    x.x -= floor(x.x);
+    x.y -= floor(x.y);
+    return x;
+}
+//...
+
+
+
 /*** Float modulo *********************************************************************/
 float 
 modulo( float x, float y ) {
