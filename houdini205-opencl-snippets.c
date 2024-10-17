@@ -56,7 +56,7 @@ length2( float3 v ) {
 
 
 
-/*** frac() as in VEX ***/
+/*** frac() as in VEX ****************************************************************/
 __attribute__((overloadable))
 float
 frac( float x ) {
