@@ -56,6 +56,15 @@ length2( float3 v ) {
 
 
 
+/*** Float modulo *********************************************************************/
+float 
+modulo( float x, float y ) {
+    x /= y;
+    return y*( x - floor(x) );
+}
+
+
+
 
 
 
