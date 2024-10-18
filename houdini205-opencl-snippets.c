@@ -65,9 +65,7 @@ frac( float x ) {
 __attribute__((overloadable))
 float2
 frac( float2 x ) {
-    x.x -= floor(x.x);
-    x.y -= floor(x.y);
-    return x;
+    return x - (float2)(floor(x.x), floor(x.y));
 }
 //...
 
