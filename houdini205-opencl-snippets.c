@@ -77,7 +77,12 @@ modulo( float x, float y ) {
     x /= y;
     return y*( x - floor(x) );
 }
+/* Using builtin fmod() or modf() requires additional care for sign, such as:
+     float c = fmod(a, b) + signbit(a)*b;
 
+     float i;
+     float c = modf(a/b, &i)*b + signbit(a)*b;
+*/
 
 
 
